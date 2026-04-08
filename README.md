@@ -4,7 +4,8 @@
 Entidades principais
 # Produto
 -Id, Nome, Categoria, Preço, QuantidadeEmEstoque, DataValidade
--Categoria
+
+# Categoria
 -Id, Nome, Descrição
 
 # Venda
