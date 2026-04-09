@@ -1,9 +1,18 @@
 ﻿using mercado.Service;
 using mercado.Models;
+using mercado.Repositories;
+using mercado.Interfaces;
 
-ProdutoService produtoService = new ProdutoService();
-CategoriaService categoriaService = new CategoriaService();
-VendaService vendaService = new VendaService();
+
+NotificationService notification = new NotificationService();
+
+IProdutoRepository produtoRepository = new ProdutoRepository();
+ICategoriaRepository categoriaRepository = new CategoriaRepository();
+IVendaRepository vendaRepository = new VendaRepository();
+
+ProdutoService produtoService = new ProdutoService(notification, produtoRepository);
+CategoriaService categoriaService = new CategoriaService(notification, categoriaRepository);
+VendaService vendaService = new VendaService(notification, vendaRepository);
 
 while (true)
 {
@@ -38,14 +47,20 @@ while (true)
 
         case "4":
             produtoService.ListarProdutos();
+            if(notification.TemErros())
+                notification.ExibirErros();
             break;
 
         case "5":
             categoriaService.ListarCategorias();
+            if(notification.TemErros())
+                notification.ExibirErros();
             break;
 
         case "6":
             RemoverProduto(produtoService);
+            if(notification.TemErros())
+                notification.ExibirErros();
             break;
 
         case "0":
@@ -56,6 +71,9 @@ while (true)
             Console.WriteLine("Opção inválida!");
             break;
     }
+
+       if (notification.HasErros())
+        notification.ExibirErros();
 
     Console.WriteLine("\nPressione qualquer tecla...");
     Console.ReadKey();
@@ -89,7 +107,7 @@ static void CadastrarProduto(ProdutoService produtoService, CategoriaService cat
 {
     Console.Clear();
 
-    if (categoriaService.listaCategorias.Count == 0)
+    if (categoriaService.ListarTodas().Count == 0)
     {
         Console.WriteLine("Cadastre pelo menos uma categoria antes de cadastrar um produto.");
         return;
@@ -137,7 +155,7 @@ static void CadastrarProduto(ProdutoService produtoService, CategoriaService cat
         Console.Write("\nID da categoria: ");
     }
 
-    var categoria = categoriaService.listaCategorias.FirstOrDefault(c => c.Id == idCategoria);
+    var categoria = categoriaService.BuscarPorId(idCategoria);
     if (categoria == null)
     {
         Console.WriteLine("Categoria não encontrada!");
@@ -151,7 +169,7 @@ static void RealizarVenda(VendaService vendaService, ProdutoService produtoServi
 {
     Console.Clear();
 
-    if (produtoService.listaProdutos.Count == 0)
+    if (produtoService.ListarTodos().Count == 0)
     {
         Console.WriteLine("Nenhum produto cadastrado.");
         return;
@@ -173,7 +191,7 @@ static void RealizarVenda(VendaService vendaService, ProdutoService produtoServi
 
         if (idProduto == 0) break;
 
-        var produto = produtoService.listaProdutos.FirstOrDefault(p => p.Id == idProduto);
+        var produto = produtoService.BuscarPorId(idProduto);
         if (produto == null)
         {
             Console.WriteLine("Produto não encontrado!");
@@ -205,7 +223,7 @@ static void RemoverProduto(ProdutoService produtoService)
 {
     Console.Clear();
 
-    if (produtoService.listaProdutos.Count == 0)
+    if (produtoService.ListarTodos().Count == 0)
     {
         Console.WriteLine("Nenhum produto cadastrado.");
         return;

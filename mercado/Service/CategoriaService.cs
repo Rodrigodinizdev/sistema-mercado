@@ -1,45 +1,49 @@
 using mercado.Models;
+using mercado.Repositories;
 namespace mercado.Service;
 
 public class CategoriaService
 {
-    public List<Categoria> listaCategorias = [];
+    private readonly ICategoriaRepository _repository;
+    private readonly NotificationService _notification;
+
+    public CategoriaService (NotificationService notification, ICategoriaRepository repository)
+    {
+        _notification = notification;
+        _repository = repository;
+    }
 
     public void CadastrarCategoria(string nome, string descricao)
     {
         if (string.IsNullOrWhiteSpace(nome))
-        {
-            Console.WriteLine("Nome é obrigatório.");
-            return;
-        }
+            _notification.AdicionarErro("Nome é obrigatório.");
 
         if (string.IsNullOrWhiteSpace(descricao))
-        {
-            Console.WriteLine("Descrição é obrigatória.");
-            return;
-        }
+            _notification.AdicionarErro("Descrição é obrigatória.");
 
-        if (listaCategorias.Any(c => c.Nome.Equals(nome, StringComparison.OrdinalIgnoreCase)))
-        {
-            Console.WriteLine("Já existe uma categoria com esse nome.");
+        if (_repository.BuscarPorNome(nome) != null)
+            _notification.AdicionarErro("Já existe uma categoria com esse nome.");
+
+        if (_notification.TemErros()) 
             return;
-        }
 
         Categoria categoria = new Categoria(nome, descricao);
-        listaCategorias.Add(categoria);
-        Console.WriteLine($"Categoria cadastrada: {categoria.Nome}");
+        _repository.Adicionar(categoria);
+        Console.WriteLine($"Categoria cadastrada: {categoria.Nome} cadastrada com sucesso");
     }
 
     public void ListarCategorias()
     {
-        if (listaCategorias.Count == 0)
+        var categorias = _repository.ListarTodas();
+
+        if (categorias.Count == 0)
         {
-            Console.WriteLine("Nenhuma categoria cadastrada.");
+            _notification.AdicionarErro("Nenhuma categoria cadastrada.");
             return;
         }
 
         Console.WriteLine("=== CATEGORIAS ===");
-        foreach (var categoria in listaCategorias)
+        foreach (var categoria in categorias)
         {
             Console.WriteLine($"ID: {categoria.Id} | Nome: {categoria.Nome} | Descrição: {categoria.Descricao}");
         }
@@ -47,15 +51,18 @@ public class CategoriaService
 
     public void RemoverCategoria(int id)
     {
-        var categoria = listaCategorias.FirstOrDefault(c => c.Id == id);
+        var categoria = _repository.BuscarPorId(id);
 
         if (categoria == null)
         {
-            Console.WriteLine("Categoria não encontrada.");
+            _notification.AdicionarErro("Categoria não encontrada.");
             return;
         }
 
-        listaCategorias.Remove(categoria);
+        _repository.Remover(categoria);
         Console.WriteLine($"Categoria '{categoria.Nome}' removida com sucesso.");
     }
+
+    public Categoria BuscarPorId(int id) => _repository.BuscarPorId(id);
+    public List<Categoria> ListarTodas() => _repository.ListarTodas();
 }
