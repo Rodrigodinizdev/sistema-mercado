@@ -84,7 +84,7 @@ public class ProdutoUI
 
         _ProdutoService.CadastrarProduto(dto, categoria);
 
-        if (_notification.HasErros())
+        if (_notification.TemErros())
             _notification.ExibirErros();
     }
 
@@ -92,7 +92,8 @@ public class ProdutoUI
     {
         Console.Clear();
         _ProdutoService.ListarProdutos();
-        if (_notification.HasErros()) _notification.ExibirErros();
+        if (_notification.TemErros()) 
+            _notification.ExibirErros();
     }
 
     public void Remover()
@@ -116,7 +117,8 @@ public class ProdutoUI
         }
 
         _ProdutoService.RemoverProduto(id);
-        if (_notification.HasErros()) _notification.ExibirErros();
+        if (_notification.TemErros())
+             _notification.ExibirErros();
     }
 
 }

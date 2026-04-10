@@ -34,15 +34,12 @@ public class CategoriaUI
             descricao = Console.ReadLine();
         }
 
-        var dto = new CriarCategoriaDto
-        {
-            Nome = nome,
-            Descricao = descricao,
-        };
-
+        var dto = new CriarCategoriaDto(nome, descricao);
+     
+       
         _service.CadastrarCategoria(dto);
 
-        if (_notification.HasErros())
+        if (_notification.TemErros())
             _notification.ExibirErros();
 
     }
@@ -51,6 +48,7 @@ public class CategoriaUI
     {
         Console.Clear();
         _service.ListarCategorias();
-        if (_notification.HasErros()) _notification.ExibirErros();
+        if (_notification.TemErros()) 
+            _notification.ExibirErros();
     }
 }

@@ -81,6 +81,7 @@ public class VendaUI
     {
         Console.Clear();
         _vendaService.ListarVendas();
-        if (_notification.HasErros()) _notification.ExibirErros();
+        if (_notification.TemErros()) 
+            _notification.ExibirErros();
     }
 }

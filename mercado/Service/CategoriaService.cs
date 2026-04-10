@@ -16,19 +16,19 @@ public class CategoriaService
 
     public void CadastrarCategoria(CriarCategoriaDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Nome))
+        if (string.IsNullOrWhiteSpace(dto.nome))
             _notification.AdicionarErro("Nome é obrigatório.");
 
-        if (string.IsNullOrWhiteSpace(dto.Descricao))
+        if (string.IsNullOrWhiteSpace(dto.descricao))
             _notification.AdicionarErro("Descrição é obrigatória.");
 
-        if (_repository.BuscarPorNome(dto.Nome) != null)
+        if (_repository.BuscarPorNome(dto.nome) != null)
             _notification.AdicionarErro("Já existe uma categoria com esse nome.");
 
         if (_notification.TemErros()) 
             return;
 
-        Categoria categoria = new Categoria(dto.Nome, dto.Descricao);
+        Categoria categoria = new Categoria(dto.nome, dto.descricao);
         _repository.Adicionar(categoria);
         Console.WriteLine($"Categoria cadastrada: {categoria.Nome} cadastrada com sucesso");
     }

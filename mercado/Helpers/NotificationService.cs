@@ -17,9 +17,5 @@ public class NotificationService
 
         Limpar();
     }
-
-    internal bool HasErros()
-    {
-        throw new NotImplementedException();
-    }
+   
 }

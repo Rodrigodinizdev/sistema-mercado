@@ -30,8 +30,11 @@ public class ProdutoService
         if (_repository.BuscarPorNome(dto.Nome) != null)
             _notification.AdicionarErro("Já existe um produto com esse nome");
 
-        if(_notification.TemErros())
+        if (_notification.TemErros())
+        {
+            _notification.ExibirErros();
             return;
+        }
 
         Produto produto = new Produto(dto.Nome, dto.Preco, categoria, dto.QuantidadeEstoque, dto.DataValidade);
         _repository.Adicionar(produto);

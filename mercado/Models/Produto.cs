@@ -37,7 +37,7 @@ public class Produto
 
     public override string ToString()
     {
-        return $"Produto: {Nome} | Categoria: {Categoria} | Preco: {Preco:C} | Estoque: {QuantidadeEstoque} unidades | Data Validade: {DataValidade}";
+        return $"Produto: Id: [#{Id}] | {Nome} | Categoria: {Categoria.Nome} | Preco: {Preco:C} | Estoque: {QuantidadeEstoque} unidades | Data Validade: {DataValidade: dd/MM/yyyy}";
     }
 
 }
