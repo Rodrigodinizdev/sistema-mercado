@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+namespace mercado.Dtos;
+using mercado.Models;
 
-namespace mercado.Dtos
+public class CriarProdutoDto
 {
-    public class CriarProdutoDto
-    {
-        
-    }
+    public string Nome { get; set; }
+    public decimal Preco { get; set; }
+    public int CategoriaId { get; set; }
+    public int QuantidadeEstoque { get; set; }
+    public DateTime DataValidade { get; set; }
 }

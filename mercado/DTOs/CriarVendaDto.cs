@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+namespace mercado.DTOs;
+using mercado.Models;
 
-namespace mercado.DTOs
-{
     public class CriarVendaDto
     {
-        
+        public List<(Produto Produto, int Quantidade)> Itens { get; set; } = [];
     }
-}

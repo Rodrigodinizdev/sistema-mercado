@@ -1,5 +1,6 @@
-using mercado.Interfaces;
+using mercado.DTOs;
 using mercado.Models;
+using mercado.Repositories;
 namespace mercado.Service;
 
 public class VendaService
@@ -8,20 +9,20 @@ public class VendaService
 
     private readonly NotificationService _notification;
 
-    public VendaService(NotificationService notification, IVendaRepository repository)
+    public VendaService(IVendaRepository repository, NotificationService notification)
     {
-        _notification = notification;
         _repository = repository;
+        _notification = notification;
     }
-    public void RealizarVenda(List<(Produto produto, int quantidade)> itens)
+    public void RealizarVenda(CriarVendaDto dto)
     {
-        if (itens == null || itens.Count == 0)
+        if (dto.Itens == null || dto.Itens.Count == 0)
         {
             _notification.AdicionarErro("A venda deve ter pelo menos um item.");
             return;
         }
 
-        foreach (var (produto, quantidade) in itens)
+        foreach (var (produto, quantidade) in dto.Itens)
         {
             if (quantidade <= 0)
                 _notification.AdicionarErro($"Quantidade inválida para o produto {produto.Nome}.");
@@ -35,7 +36,7 @@ public class VendaService
 
         Venda venda = new Venda(DateTime.Now);
 
-        foreach (var (produto, quantidade) in itens)
+        foreach (var (produto, quantidade) in dto.Itens)
         {
             ItemVenda item = new ItemVenda(produto, quantidade, produto.Preco);
             produto.DebitarEstoque(quantidade);

@@ -1,4 +1,3 @@
-using mercado.Interfaces;
 using mercado.Models;
 namespace mercado.Repositories;
 

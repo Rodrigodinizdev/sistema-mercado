@@ -1,3 +1,4 @@
+using mercado.Dtos;
 using mercado.Models;
 using mercado.Repositories;
 namespace mercado.Service;
@@ -8,31 +9,31 @@ public class ProdutoService
 
     private readonly NotificationService _notification;
 
-    public ProdutoService (NotificationService notification, IProdutoRepository repository)
+    public ProdutoService (IProdutoRepository repository, NotificationService notification)
     {
-        _notification = notification;
         _repository = repository;
+        _notification = notification;
     } 
 
-    public void CadastrarProdutos(string nome, decimal preco, Categoria categoria, int quantidadeEstoque, DateTime dataValidade)
+    public void CadastrarProduto(CriarProdutoDto dto, Categoria categoria)
     {
 
-        if (string.IsNullOrWhiteSpace(nome))
+        if (string.IsNullOrWhiteSpace(dto.Nome))
             _notification.AdicionarErro("Nome é obrigatório");
             
-        if (preco <= 0)
+        if (dto.Preco <= 0)
             _notification.AdicionarErro("Preço deve ser maior que zero.");
         
-        if (quantidadeEstoque < 0)
+        if (dto.QuantidadeEstoque < 0)
             _notification.AdicionarErro("Estoque não pode ser negativo");
 
-        if (_repository.BuscarPorNome(nome) != null)
+        if (_repository.BuscarPorNome(dto.Nome) != null)
             _notification.AdicionarErro("Já existe um produto com esse nome");
 
         if(_notification.TemErros())
             return;
 
-        Produto produto = new Produto(nome, preco, categoria, quantidadeEstoque, dataValidade);
+        Produto produto = new Produto(dto.Nome, dto.Preco, categoria, dto.QuantidadeEstoque, dto.DataValidade);
         _repository.Adicionar(produto);
         Console.WriteLine($"Produto Cadastrado com sucesso: {produto}");
     }

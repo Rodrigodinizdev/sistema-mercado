@@ -1,3 +1,4 @@
+using mercado.DTOs;
 using mercado.Models;
 using mercado.Repositories;
 namespace mercado.Service;
@@ -7,27 +8,27 @@ public class CategoriaService
     private readonly ICategoriaRepository _repository;
     private readonly NotificationService _notification;
 
-    public CategoriaService (NotificationService notification, ICategoriaRepository repository)
+    public CategoriaService (ICategoriaRepository repository, NotificationService notification)
     {
-        _notification = notification;
         _repository = repository;
+        _notification = notification;
     }
 
-    public void CadastrarCategoria(string nome, string descricao)
+    public void CadastrarCategoria(CriarCategoriaDto dto)
     {
-        if (string.IsNullOrWhiteSpace(nome))
+        if (string.IsNullOrWhiteSpace(dto.Nome))
             _notification.AdicionarErro("Nome é obrigatório.");
 
-        if (string.IsNullOrWhiteSpace(descricao))
+        if (string.IsNullOrWhiteSpace(dto.Descricao))
             _notification.AdicionarErro("Descrição é obrigatória.");
 
-        if (_repository.BuscarPorNome(nome) != null)
+        if (_repository.BuscarPorNome(dto.Nome) != null)
             _notification.AdicionarErro("Já existe uma categoria com esse nome.");
 
         if (_notification.TemErros()) 
             return;
 
-        Categoria categoria = new Categoria(nome, descricao);
+        Categoria categoria = new Categoria(dto.Nome, dto.Descricao);
         _repository.Adicionar(categoria);
         Console.WriteLine($"Categoria cadastrada: {categoria.Nome} cadastrada com sucesso");
     }
